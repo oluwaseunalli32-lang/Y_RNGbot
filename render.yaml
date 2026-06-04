@@ -1,6 +1,7 @@
 services:
   - type: worker
-    name: y-rngbot
+    name: y-rngbot-worker
     runtime: python
+    plan: starter
     buildCommand: pip install -r requirements.txt
     startCommand: python bot.py
