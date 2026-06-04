@@ -3,10 +3,9 @@ import random
 import time
 from telebot import TeleBot
 
-# Fetch the token from Render's environment variables
 TOKEN = os.environ.get('BOT_TOKEN')
 if not TOKEN:
-    raise ValueError("Error: BOT_TOKEN environment variable not found!")
+    raise ValueError("Missing BOT_TOKEN environment variable!")
 
 bot = TeleBot(TOKEN)
 
@@ -14,10 +13,10 @@ bot = TeleBot(TOKEN)
 def send_welcome(message):
     welcome_text = (
         "🎲 **Welcome to Y_RNGbot!**\n\n"
-        "I'm running 24/7 as a background worker.\n\n"
+        "I'm running 24/7 as a manual background worker.\n\n"
         "📥 **Commands:**\n"
         "/roll - Get a random number from 1 to 100\n"
-        "/rng [min] [max] - Get a number in your custom range"
+        "/rng [min] [max] - Custom range (e.g., `/rng 5 50`)"
     )
     bot.reply_to(message, welcome_text, parse_mode='Markdown')
 
@@ -45,12 +44,10 @@ def custom_rng(message):
         bot.reply_to(message, "❌ Please enter valid integers.", parse_mode='Markdown')
 
 if __name__ == '__main__':
-    print("Y_RNGbot Background Worker is starting up...")
-    
-    # Robust loop to keep the background process alive even during network blips
+    print("Y_RNGbot Worker is spinning up...")
     while True:
         try:
             bot.infinity_polling(timeout=10, long_polling_timeout=5)
         except Exception as e:
-            print(f"Error encountered: {e}. Restarting in 5 seconds...")
+            print(f"Connection dropped: {e}. Restarting loop in 5 seconds...")
             time.sleep(5)
